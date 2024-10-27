@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using Soenneker.Azure.OpenAI.Client.Abstract;
 using Soenneker.Extensions.Configuration;
 using Soenneker.Utils.AsyncSingleton;
-using Soenneker.Extensions.String;
 using System.Threading.Tasks;
 using System.Threading;
 
@@ -18,7 +17,6 @@ public class AzureOpenAIClientUtil: IAzureOpenAIClientUtil
     private readonly AsyncSingleton<AzureOpenAIClient> _client;
 
     private AzureOpenAIClientOptions? _options;
-    private string? _deployment;
 
     public AzureOpenAIClientUtil(ILogger<AzureOpenAIClient> logger, IConfiguration configuration)
     {
@@ -26,12 +24,8 @@ public class AzureOpenAIClientUtil: IAzureOpenAIClientUtil
         {
             var uri = configuration.GetValueStrict<string>("Azure:OpenAI:Uri");
             var apiKey = configuration.GetValueStrict<string>("Azure:OpenAI:ApiKey");
-            var deployment = configuration.GetValue<string?>("Azure:OpenAI:Deployment");
 
-            if (!_deployment.IsNullOrEmpty())
-                deployment = _deployment;
-
-            logger.LogDebug("Creating Azure OpenAI client with deployment ({deployment})...", deployment);
+            logger.LogDebug("Creating Azure OpenAI client ({uri})...", uri);
 
             var credential = new ApiKeyCredential(apiKey);
 
@@ -41,9 +35,8 @@ public class AzureOpenAIClientUtil: IAzureOpenAIClientUtil
         });
     }
 
-    public void SetOptions(string model, AzureOpenAIClientOptions options)
+    public void SetOptions(AzureOpenAIClientOptions options)
     {
-        _deployment = model;
         _options = options;
     }
 

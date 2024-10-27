@@ -11,11 +11,10 @@ namespace Soenneker.Azure.OpenAI.Client.Abstract;
 public interface IAzureOpenAIClientUtil : IDisposable, IAsyncDisposable
 {
     /// <summary>
-    /// Not required, but can be used to set the model and options for the client
+    /// Not required, but can be used to set the options for the client
     /// </summary>
-    /// <param name="model"></param>
     /// <param name="options"></param>
-    void SetOptions(string model, AzureOpenAIClientOptions options);
+    void SetOptions(AzureOpenAIClientOptions options);
 
     ValueTask<AzureOpenAIClient> Get(CancellationToken cancellationToken = default);
 }

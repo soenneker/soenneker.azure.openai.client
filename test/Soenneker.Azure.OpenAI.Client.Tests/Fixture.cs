@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
-using Soenneker.Azure.OpenAI.Client.Registrars;
 using Soenneker.Fixtures.Unit;
 using Soenneker.Utils.Test;
+using Soenneker.Azure.OpenAI.Client.Registrars;
 
 namespace Soenneker.Azure.OpenAI.Client.Tests;
 
@@ -25,6 +25,7 @@ public class Fixture : UnitFixture
 
         IConfiguration config = TestUtil.BuildConfig();
         services.AddSingleton(config);
-        services.AddAzureOpenAIClientUtilAsSingleton();
+
+        services.AddAzureOpenAIClientUtilAsScoped();
     }
 }

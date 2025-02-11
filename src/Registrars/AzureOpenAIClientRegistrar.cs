@@ -1,4 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Soenneker.Azure.OpenAI.Client.Abstract;
 
@@ -12,16 +12,18 @@ public static class AzureOpenAIClientUtilRegistrar
     /// <summary>
     /// Adds <see cref="IAzureOpenAIClientUtil"/> as a singleton service. <para/>
     /// </summary>
-    public static void AddAzureOpenAIClientUtilAsSingleton(this IServiceCollection services)
+    public static IServiceCollection AddAzureOpenAIClientUtilAsSingleton(this IServiceCollection services)
     {
         services.TryAddSingleton<IAzureOpenAIClientUtil, AzureOpenAIClientUtil>();
+        return services;
     }
 
     /// <summary>
     /// Adds <see cref="IAzureOpenAIClientUtil"/> as a scoped service. <para/>
     /// </summary>
-    public static void AddAzureOpenAIClientUtilAsScoped(this IServiceCollection services)
+    public static IServiceCollection AddAzureOpenAIClientUtilAsScoped(this IServiceCollection services)
     {
         services.TryAddScoped<IAzureOpenAIClientUtil, AzureOpenAIClientUtil>();
+        return services;
     }
 }

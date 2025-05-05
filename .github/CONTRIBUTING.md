@@ -1,4 +1,4 @@
-# Contributing to Soenneker.Azure.OpenAI.Client
+﻿# Contributing to Soenneker.Azure.OpenAI.Client
 
 We're excited that you're interested in contributing!
 

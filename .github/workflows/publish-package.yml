@@ -96,11 +96,12 @@ jobs:
       - name: Create GitHub Release
         run: |
           changelog=$(git log -20 --pretty=format:"- %s")
+          tag_name="v$BUILD_VERSION"
 
           json_payload=$(
             jq -n \
-              --arg tag_name "$TAG_NAME" \
-              --arg name "$TAG_NAME" \
+              --arg tag_name "$tag_name" \
+              --arg name "$tag_name" \
               --arg body "$changelog" \
               '{
                 tag_name: $tag_name,

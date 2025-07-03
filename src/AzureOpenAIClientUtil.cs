@@ -12,7 +12,7 @@ using System.Threading;
 namespace Soenneker.Azure.OpenAI.Client;
 
 /// <inheritdoc cref="IAzureOpenAIClientUtil"/>
-public class AzureOpenAIClientUtil: IAzureOpenAIClientUtil
+public sealed class AzureOpenAIClientUtil: IAzureOpenAIClientUtil
 {
     private readonly AsyncSingleton<AzureOpenAIClient> _client;
 
@@ -47,15 +47,11 @@ public class AzureOpenAIClientUtil: IAzureOpenAIClientUtil
 
     public void Dispose()
     {
-        GC.SuppressFinalize(this);
-
         _client.Dispose();
     }
 
     public ValueTask DisposeAsync()
     {
-        GC.SuppressFinalize(this);
-
         return _client.DisposeAsync();
     }
 }

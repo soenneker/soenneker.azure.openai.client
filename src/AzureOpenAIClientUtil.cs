@@ -15,24 +15,30 @@ namespace Soenneker.Azure.OpenAI.Client;
 public sealed class AzureOpenAIClientUtil: IAzureOpenAIClientUtil
 {
     private readonly AsyncSingleton<AzureOpenAIClient> _client;
+    private readonly ILogger<AzureOpenAIClient> _logger;
+    private readonly IConfiguration _configuration;
 
     private AzureOpenAIClientOptions? _options;
 
     public AzureOpenAIClientUtil(ILogger<AzureOpenAIClient> logger, IConfiguration configuration)
     {
-        _client = new AsyncSingleton<AzureOpenAIClient>(() =>
-        {
-            var uri = configuration.GetValueStrict<string>("Azure:OpenAI:Uri");
-            var apiKey = configuration.GetValueStrict<string>("Azure:OpenAI:ApiKey");
+        _logger = logger;
+        _configuration = configuration;
+        _client = new AsyncSingleton<AzureOpenAIClient>(CreateClient);
+    }
 
-            logger.LogDebug("Creating Azure OpenAI client ({uri})...", uri);
+    private AzureOpenAIClient CreateClient()
+    {
+        var uri = _configuration.GetValueStrict<string>("Azure:OpenAI:Uri");
+        var apiKey = _configuration.GetValueStrict<string>("Azure:OpenAI:ApiKey");
 
-            var credential = new ApiKeyCredential(apiKey);
+        _logger.LogDebug("Creating Azure OpenAI client ({uri})...", uri);
 
-            var client = new AzureOpenAIClient(new Uri(uri), credential, _options);
+        var credential = new ApiKeyCredential(apiKey);
 
-            return client;
-        });
+        var client = new AzureOpenAIClient(new Uri(uri), credential, _options);
+
+        return client;
     }
 
     public void SetOptions(AzureOpenAIClientOptions options)

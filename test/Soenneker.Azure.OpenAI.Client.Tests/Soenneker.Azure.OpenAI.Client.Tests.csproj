@@ -27,7 +27,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Soenneker.Azure.OpenAI.Client.csproj" />
+        <ProjectReference Include="..\..\src\Soenneker.Azure.OpenAI.Client\Soenneker.Azure.OpenAI.Client.csproj" />
     </ItemGroup>
 
     <ItemGroup>

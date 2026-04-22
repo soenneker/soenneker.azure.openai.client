@@ -1,20 +1,19 @@
 using Soenneker.Azure.OpenAI.Client.Abstract;
-using Soenneker.Tests.FixturedUnit;
-using Xunit;
+using Soenneker.Tests.HostedUnit;
 
 namespace Soenneker.Azure.OpenAI.Client.Tests;
 
-[Collection("Collection")]
-public class AzureOpenAIClientUtilTests : FixturedUnitTest
+[ClassDataSource<Host>(Shared = SharedType.PerTestSession)]
+public class AzureOpenAIClientUtilTests : HostedUnitTest
 {
     private readonly IAzureOpenAIClientUtil _util;
 
-    public AzureOpenAIClientUtilTests(Fixture fixture, ITestOutputHelper output) : base(fixture, output)
+    public AzureOpenAIClientUtilTests(Host host) : base(host)
     {
         _util = Resolve<IAzureOpenAIClientUtil>(true);
     }
 
-    [Fact]
+    [Test]
     public void Default()
     {
 

@@ -17,9 +17,9 @@ public interface IAzureOpenAIClientUtil : IDisposable, IAsyncDisposable
     void SetOptions(AzureOpenAIClientOptions options);
 
     /// <summary>
-    /// Gets the value.
+    /// Returns the configured azure OpenAI Client used by the azure openai client.
     /// </summary>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>A task containing the result of the operation.</returns>
+    /// <param name="cancellationToken">Token used to cancel the operation.</param>
+    /// <returns>A task whose result is the requested azure OpenAI Client.</returns>
     ValueTask<AzureOpenAIClient> Get(CancellationToken cancellationToken = default);
 }

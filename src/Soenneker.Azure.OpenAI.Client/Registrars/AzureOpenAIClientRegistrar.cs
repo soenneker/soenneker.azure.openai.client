@@ -12,6 +12,8 @@ public static class AzureOpenAIClientUtilRegistrar
     /// <summary>
     /// Adds <see cref="IAzureOpenAIClientUtil"/> as a singleton service. <para/>
     /// </summary>
+    /// <param name="services">Service collection that receives the registration.</param>
+    /// <returns>The same service collection, so additional registrations can be chained.</returns>
     public static IServiceCollection AddAzureOpenAIClientUtilAsSingleton(this IServiceCollection services)
     {
         services.TryAddSingleton<IAzureOpenAIClientUtil, AzureOpenAIClientUtil>();
@@ -21,6 +23,8 @@ public static class AzureOpenAIClientUtilRegistrar
     /// <summary>
     /// Adds <see cref="IAzureOpenAIClientUtil"/> as a scoped service. <para/>
     /// </summary>
+    /// <param name="services">Service collection that receives the registration.</param>
+    /// <returns>The same service collection, so additional registrations can be chained.</returns>
     public static IServiceCollection AddAzureOpenAIClientUtilAsScoped(this IServiceCollection services)
     {
         services.TryAddScoped<IAzureOpenAIClientUtil, AzureOpenAIClientUtil>();

@@ -17,8 +17,10 @@ public sealed class AzureOpenAIClientUtil: IAzureOpenAIClientUtil
     private readonly AsyncSingleton<AzureOpenAIClient> _client;
     private readonly ILogger<AzureOpenAIClient> _logger;
     private readonly IConfiguration _configuration;
+    private readonly object _optionsLock = new();
 
     private AzureOpenAIClientOptions? _options;
+    private bool _clientCreated;
 
     public AzureOpenAIClientUtil(ILogger<AzureOpenAIClient> logger, IConfiguration configuration)
     {
@@ -34,16 +36,30 @@ public sealed class AzureOpenAIClientUtil: IAzureOpenAIClientUtil
 
         _logger.LogDebug("Creating Azure OpenAI client ({uri})...", uri);
 
+        if (!Uri.TryCreate(uri, UriKind.Absolute, out Uri? endpoint) || endpoint.Scheme != Uri.UriSchemeHttps)
+            throw new InvalidOperationException("Azure:OpenAI:Uri must be an absolute HTTPS URI.");
+
         var credential = new ApiKeyCredential(apiKey);
 
-        var client = new AzureOpenAIClient(new Uri(uri), credential, _options);
-
-        return client;
+        lock (_optionsLock)
+        {
+            var client = new AzureOpenAIClient(endpoint, credential, _options);
+            _clientCreated = true;
+            return client;
+        }
     }
 
     public void SetOptions(AzureOpenAIClientOptions options)
     {
-        _options = options;
+        ArgumentNullException.ThrowIfNull(options);
+
+        lock (_optionsLock)
+        {
+            if (_clientCreated)
+                throw new InvalidOperationException("Options must be set before the Azure OpenAI client is created.");
+
+            _options = options;
+        }
     }
 
     public ValueTask<AzureOpenAIClient> Get(CancellationToken cancellationToken = default)

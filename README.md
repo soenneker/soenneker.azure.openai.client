@@ -5,40 +5,61 @@
 
 # Soenneker.Azure.OpenAI.Client
 
-An async thread-safe singleton for the Azure OpenAI client.
+Creates and caches an API-key-authenticated `AzureOpenAIClient` for dependency-injected applications.
 
-## Install
+## Installation
 
 ```bash
 dotnet add package Soenneker.Azure.OpenAI.Client
 ```
 
-## Quick start
+## Configuration
 
-```csharp
-using Soenneker.Azure.OpenAI.Client.Registrars;
-using Microsoft.Extensions.DependencyInjection;
-
-var services = new ServiceCollection();
-var result = services.AddAzureOpenAIClientUtilAsSingleton();
+```json
+{
+  "Azure": {
+    "OpenAI": {
+      "Uri": "https://your-resource.openai.azure.com",
+      "ApiKey": "your-api-key"
+    }
+  }
+}
 ```
 
-Adds `IAzureOpenAIClientUtil` as a singleton service.
+The endpoint must be an absolute HTTPS URI. Store the API key in a secret provider or environment variable, not source-controlled configuration.
 
-## What you get
+## Registration and use
 
-- `IAzureOpenAIClientUtil` — An async thread-safe singleton for the Azure OpenAI client.
-- `AzureOpenAIClientUtilRegistrar` — An async thread-safe singleton for the Azure OpenAI client.
+```csharp
+using Azure.AI.OpenAI;
+using Soenneker.Azure.OpenAI.Client.Abstract;
+using Soenneker.Azure.OpenAI.Client.Registrars;
 
-## API at a glance
+builder.Services.AddAzureOpenAIClientUtilAsSingleton();
 
-| API | What it does | Result / important behavior |
-| --- | --- | --- |
-| `AzureOpenAIClientUtilRegistrar.AddAzureOpenAIClientUtilAsSingleton(services)` | Adds `IAzureOpenAIClientUtil` as a singleton service. | The same service collection, so additional registrations can be chained. |
-| `AzureOpenAIClientUtilRegistrar.AddAzureOpenAIClientUtilAsScoped(services)` | Adds `IAzureOpenAIClientUtil` as a scoped service. | The same service collection, so additional registrations can be chained. |
+public sealed class AzureOpenAIService(IAzureOpenAIClientUtil clientUtil)
+{
+    public ValueTask<AzureOpenAIClient> GetClient(
+        CancellationToken cancellationToken) =>
+        clientUtil.Get(cancellationToken);
+}
+```
 
-## Practical notes
+Use the returned Azure client to obtain deployment-specific chat, audio, embedding, or other clients supported by the Azure/OpenAI SDK.
 
-- Reuse the registered client instead of constructing one per operation.
-- Calls that return a cached or singleton value reuse the same instance until the owning service is disposed.
-- Dispose instances you own when their scope ends so held resources can be released.
+## Client options and lifecycle
+
+Call `SetOptions()` before the first `Get()` when custom `AzureOpenAIClientOptions` are required:
+
+```csharp
+clientUtil.SetOptions(new AzureOpenAIClientOptions());
+AzureOpenAIClient client = await clientUtil.Get(cancellationToken);
+```
+
+- The first successful `Get()` creates the client; later calls return the same instance.
+- `SetOptions()` after creation throws because a cached client cannot be reconfigured.
+- Endpoint, API key, and options changes require replacing the utility instance.
+- Missing configuration or a non-HTTPS endpoint fails initialization.
+- Let the DI container dispose registered instances.
+
+For deployment-specific wrappers, see `Soenneker.Azure.OpenAI.Client.Chat` and `Soenneker.Azure.OpenAI.Client.Audio`.

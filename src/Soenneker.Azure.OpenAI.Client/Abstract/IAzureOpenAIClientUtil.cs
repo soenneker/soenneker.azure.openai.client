@@ -11,9 +11,11 @@ namespace Soenneker.Azure.OpenAI.Client.Abstract;
 public interface IAzureOpenAIClientUtil : IDisposable, IAsyncDisposable
 {
     /// <summary>
-    /// Not required, but can be used to set the options for the client
+    /// Sets client options before the Azure OpenAI client is first created.
     /// </summary>
-    /// <param name="options"></param>
+    /// <param name="options">Options used to construct the Azure OpenAI client.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="options"/> is <see langword="null"/>.</exception>
+    /// <exception cref="InvalidOperationException">The Azure OpenAI client has already been created.</exception>
     void SetOptions(AzureOpenAIClientOptions options);
 
     /// <summary>

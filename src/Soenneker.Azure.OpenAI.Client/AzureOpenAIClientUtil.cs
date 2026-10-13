@@ -31,8 +31,8 @@ public sealed class AzureOpenAIClientUtil: IAzureOpenAIClientUtil
 
     private AzureOpenAIClient CreateClient()
     {
-        var uri = _configuration.GetValueStrict<string>("Azure:OpenAI:Uri");
-        var apiKey = _configuration.GetValueStrict<string>("Azure:OpenAI:ApiKey");
+        var uri = _configuration.GetStringStrict("Azure:OpenAI:Uri");
+        var apiKey = _configuration.GetStringStrict("Azure:OpenAI:ApiKey");
 
         _logger.LogDebug("Creating Azure OpenAI client ({uri})...", uri);
 

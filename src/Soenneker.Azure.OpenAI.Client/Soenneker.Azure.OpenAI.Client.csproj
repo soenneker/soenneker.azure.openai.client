@@ -47,7 +47,7 @@
 
     <ItemGroup>
         <PackageReference Include="Azure.AI.OpenAI" Version="2.1.0" />
-<PackageReference Include="Soenneker.Extensions.Configuration" Version="11.0.918" />
+<PackageReference Include="Soenneker.Extensions.Configuration" Version="11.0.919" />
         <PackageReference Include="Soenneker.Utils.AsyncSingleton" Version="11.0.893" />
     </ItemGroup>
 </Project>

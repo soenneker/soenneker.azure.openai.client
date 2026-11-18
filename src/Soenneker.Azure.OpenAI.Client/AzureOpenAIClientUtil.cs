@@ -34,7 +34,8 @@ public sealed class AzureOpenAIClientUtil: IAzureOpenAIClientUtil
         var uri = _configuration.GetStringStrict("Azure:OpenAI:Uri");
         var apiKey = _configuration.GetStringStrict("Azure:OpenAI:ApiKey");
 
-        _logger.LogDebug("Creating Azure OpenAI client ({uri})...", uri);
+        if (_logger.IsEnabled(LogLevel.Debug))
+            _logger.LogDebug("Creating Azure OpenAI client ({uri})...", uri);
 
         if (!Uri.TryCreate(uri, UriKind.Absolute, out Uri? endpoint) || endpoint.Scheme != Uri.UriSchemeHttps)
             throw new InvalidOperationException("Azure:OpenAI:Uri must be an absolute HTTPS URI.");
